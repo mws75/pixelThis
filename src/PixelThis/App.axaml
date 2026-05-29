@@ -1,0 +1,30 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PixelThis.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://PixelThis/Assets/Styles.axaml" />
+    </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="AppBg">#1A1D27</Color>
+            <Color x:Key="PanelBg">#232737</Color>
+            <Color x:Key="TopBarBg">#2C3044</Color>
+            <Color x:Key="PanelBg2">#22273440</Color>
+            <Color x:Key="Accent">#25C9B0</Color>
+            <Color x:Key="AccentSoft">#3325C9B0</Color>
+            <Color x:Key="Stroke">#373C4E</Color>
+            <Color x:Key="TextMuted">#8C91A0</Color>
+
+            <SolidColorBrush x:Key="AppBgBrush" Color="{StaticResource AppBg}" />
+            <SolidColorBrush x:Key="PanelBgBrush" Color="{StaticResource PanelBg}" />
+            <SolidColorBrush x:Key="TopBarBgBrush" Color="{StaticResource TopBarBg}" />
+            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}" />
+            <SolidColorBrush x:Key="StrokeBrush" Color="{StaticResource Stroke}" />
+            <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMuted}" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

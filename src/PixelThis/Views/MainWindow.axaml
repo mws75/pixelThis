@@ -1,0 +1,183 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:PixelThis.ViewModels"
+        xmlns:ctrl="using:PixelThis.Controls"
+        xmlns:conv="using:PixelThis.Converters"
+        xmlns:tools="using:PixelThis.Tools"
+        xmlns:models="using:PixelThis.Models"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+        x:Class="PixelThis.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="PixelThis"
+        Width="1280" Height="820"
+        MinWidth="900" MinHeight="600"
+        Background="{StaticResource AppBgBrush}"
+        Foreground="#E8E8F0"
+        FontFamily="Inter">
+
+    <DockPanel LastChildFill="True">
+
+        <!-- ===== Top bar ===== -->
+        <Border DockPanel.Dock="Top" Background="{StaticResource TopBarBgBrush}"
+                BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,*,Auto" Height="48">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0">
+                    <TextBlock Text="◆" Foreground="{StaticResource AccentBrush}" FontSize="16" VerticalAlignment="Center" />
+                    <TextBlock Text="PixelThis" FontWeight="Bold" FontSize="16" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Text="for Godot" Foreground="{StaticResource TextMutedBrush}" FontSize="11"
+                               Margin="8,2,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Classes="icon" Content="New" Click="OnNewClick" ToolTip.Tip="New image" />
+                    <Button Classes="icon" Content="Import Palette" Click="OnImportPaletteClick"
+                            ToolTip.Tip="Paste a list of hex codes to build a palette" />
+                    <Button Classes="icon" Content="Export PNG" Click="OnExportClick"
+                            ToolTip.Tip="Export a transparent PNG for Godot" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="0,0,14,0">
+                    <Button Classes="icon" Content="↶" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo (Cmd+Z)" />
+                    <Button Classes="icon" Content="↷" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}" ToolTip.Tip="Redo" />
+                    <Border Width="1" Background="{StaticResource StrokeBrush}" Margin="6,8" />
+                    <Button Classes="icon" Content="−" Command="{Binding ZoomOutCommand}" ToolTip.Tip="Zoom out" />
+                    <TextBlock Text="{Binding Zoom, StringFormat='{}{0:0}×'}" VerticalAlignment="Center" Width="40" TextAlignment="Center" />
+                    <Button Classes="icon" Content="+" Command="{Binding ZoomInCommand}" ToolTip.Tip="Zoom in" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===== Status bar ===== -->
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource TopBarBgBrush}"
+                BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="Auto,*,Auto" Height="28">
+                <TextBlock Grid.Column="0" Text="{Binding DocumentInfo}" Margin="14,0" VerticalAlignment="Center"
+                           Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
+                <TextBlock Grid.Column="2" x:Name="HoverInfo" Margin="0,0,14,0" VerticalAlignment="Center"
+                           Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
+            </Grid>
+        </Border>
+
+        <!-- ===== Left tool rail ===== -->
+        <Border DockPanel.Dock="Left" Background="{StaticResource AppBgBrush}"
+                BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,0,1,0" Width="60">
+            <StackPanel Margin="0,12" Spacing="6" HorizontalAlignment="Center">
+                <ToggleButton Classes="tool" Content="✏" ToolTip.Tip="Pencil (B)"
+                              Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Pencil}"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Pencil}" />
+                <ToggleButton Classes="tool" Content="⌫" ToolTip.Tip="Eraser (E)"
+                              Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Eraser}"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Eraser}" />
+                <ToggleButton Classes="tool" Content="🪣" ToolTip.Tip="Fill (G)"
+                              Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Fill}"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Fill}" />
+                <ToggleButton Classes="tool" Content="💧" ToolTip.Tip="Color picker (I)"
+                              Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Picker}"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Picker}" />
+
+                <Border Height="1" Background="{StaticResource StrokeBrush}" Margin="8,8" />
+
+                <ToggleButton Classes="tool" Content="#" ToolTip.Tip="Toggle pixel grid"
+                              IsChecked="{Binding ShowGrid}" />
+            </StackPanel>
+        </Border>
+
+        <!-- ===== Right panels ===== -->
+        <Border DockPanel.Dock="Right" Background="{StaticResource AppBgBrush}" Width="288" Padding="12">
+            <Grid RowDefinitions="Auto,Auto,*">
+
+                <!-- Current color + brush -->
+                <Border Grid.Row="0" Classes="panel" Margin="0,0,0,12">
+                    <StackPanel Spacing="10">
+                        <TextBlock Classes="section" Text="COLOR" />
+                        <Grid ColumnDefinitions="44,*,Auto">
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="8"
+                                    Background="{Binding CurrentColorBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" />
+                            <TextBox Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center"
+                                     Text="{Binding CurrentColorHex, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Watermark="#RRGGBB" />
+                            <Button Grid.Column="2" Classes="icon" Content="＋" VerticalAlignment="Center"
+                                    Command="{Binding AddCurrentColorToPaletteCommand}" ToolTip.Tip="Add to palette" />
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Brush" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
+                            <Slider Width="150" Minimum="1" Maximum="8" Value="{Binding BrushSize}" />
+                            <TextBlock Text="{Binding BrushSize, StringFormat='{}{0} px'}" VerticalAlignment="Center" FontSize="12" Width="34" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Palette -->
+                <Border Grid.Row="1" Classes="panel" Margin="0,0,0,12">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBlock Grid.Column="0" Classes="section" Text="PALETTE" VerticalAlignment="Center" />
+                            <Button Grid.Column="1" Classes="icon" Content="Import" Click="OnImportPaletteClick" Padding="8,3" FontSize="11" />
+                            <Button Grid.Column="2" Classes="icon" Content="Clear" Command="{Binding ClearPaletteCommand}" Margin="6,0,0,0" Padding="8,3" FontSize="11" />
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding Palette}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:PaletteColor">
+                                    <Button Width="26" Height="26" Margin="3" Padding="0" CornerRadius="6"
+                                            Background="{Binding Brush}"
+                                            BorderBrush="#33FFFFFF" BorderThickness="1"
+                                            ToolTip.Tip="{Binding Hex}"
+                                            Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).SelectColorCommand}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Layers -->
+                <Border Grid.Row="2" Classes="panel">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <TextBlock Grid.Row="0" Classes="section" Text="LAYERS" Margin="2,0,0,8" />
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Document.Layers}"
+                                 SelectedIndex="{Binding Document.ActiveLayerIndex, Mode=TwoWay}"
+                                 Background="Transparent" BorderThickness="0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Layer">
+                                    <Grid ColumnDefinitions="Auto,*" Height="30">
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible}" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                            <Button Classes="icon" Content="＋" Command="{Binding AddLayerCommand}" ToolTip.Tip="Add layer" />
+                            <Button Classes="icon" Content="🗑" Command="{Binding RemoveLayerCommand}" ToolTip.Tip="Delete layer" />
+                            <Button Classes="icon" Content="▲" Command="{Binding MoveLayerUpCommand}" ToolTip.Tip="Move up" />
+                            <Button Classes="icon" Content="▼" Command="{Binding MoveLayerDownCommand}" ToolTip.Tip="Move down" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ===== Center canvas ===== -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                      Background="#161923">
+            <Grid Margin="40">
+                <ctrl:PixelEditorControl x:Name="Editor"
+                                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                                         Document="{Binding Document}"
+                                         Zoom="{Binding Zoom}"
+                                         ActiveTool="{Binding ActiveTool}"
+                                         BrushSize="{Binding BrushSize}"
+                                         ShowGrid="{Binding ShowGrid}"
+                                         PrimaryColor="{Binding CurrentColor, Mode=TwoWay}" />
+            </Grid>
+        </ScrollViewer>
+
+    </DockPanel>
+</Window>

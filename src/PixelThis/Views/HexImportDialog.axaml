@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PixelThis.Views.HexImportDialog"
+        Title="Import Palette"
+        Width="420" Height="460"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{StaticResource AppBgBrush}"
+        Foreground="#E8E8F0"
+        FontFamily="Inter">
+    <Grid Margin="18" RowDefinitions="Auto,Auto,*,Auto,Auto">
+        <TextBlock Grid.Row="0" Text="Import hex palette" FontSize="16" FontWeight="Bold" />
+        <TextBlock Grid.Row="1" Margin="0,4,0,12" Foreground="{StaticResource TextMutedBrush}" FontSize="12"
+                   TextWrapping="Wrap"
+                   Text="Paste hex codes separated by spaces, commas, or new lines. The # is optional. Anything that isn't a color is ignored." />
+        <TextBox Grid.Row="2" x:Name="Input" AcceptsReturn="True" TextWrapping="Wrap"
+                 FontFamily="monospace" VerticalContentAlignment="Top"
+                 Watermark="#140c1c&#x0a;#442434&#x0a;30346d, 4e4a4e ..." />
+        <CheckBox Grid.Row="3" x:Name="ReplaceCheck" Margin="0,12" Content="Replace current palette" IsChecked="True" />
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Cancel" Click="OnCancel" Padding="16,8" />
+            <Button Content="Import" Click="OnImport" Padding="16,8"
+                    Background="{StaticResource AccentBrush}" Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Window>

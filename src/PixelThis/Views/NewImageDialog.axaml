@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PixelThis.Views.NewImageDialog"
+        Title="New Image"
+        Width="360" Height="300"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{StaticResource AppBgBrush}"
+        Foreground="#E8E8F0"
+        FontFamily="Inter">
+    <Grid Margin="18" RowDefinitions="Auto,Auto,Auto,*,Auto">
+        <TextBlock Grid.Row="0" Text="New image" FontSize="16" FontWeight="Bold" Margin="0,0,0,14" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,12">
+            <TextBlock Grid.Column="0" Text="W" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextMutedBrush}" />
+            <NumericUpDown Grid.Column="1" x:Name="WidthBox" Minimum="1" Maximum="1024" Value="32" Increment="1" FormatString="0" />
+            <TextBlock Grid.Column="2" Text="H" VerticalAlignment="Center" Margin="12,0,8,0" Foreground="{StaticResource TextMutedBrush}" />
+            <NumericUpDown Grid.Column="3" x:Name="HeightBox" Minimum="1" Maximum="1024" Value="32" Increment="1" FormatString="0" />
+        </Grid>
+
+        <WrapPanel Grid.Row="2">
+            <Button Content="16²" Click="OnPreset" Tag="16" Margin="0,0,6,6" />
+            <Button Content="32²" Click="OnPreset" Tag="32" Margin="0,0,6,6" />
+            <Button Content="48²" Click="OnPreset" Tag="48" Margin="0,0,6,6" />
+            <Button Content="64²" Click="OnPreset" Tag="64" Margin="0,0,6,6" />
+            <Button Content="128²" Click="OnPreset" Tag="128" Margin="0,0,6,6" />
+        </WrapPanel>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Cancel" Click="OnCancel" Padding="16,8" />
+            <Button Content="Create" Click="OnCreate" Padding="16,8"
+                    Background="{StaticResource AccentBrush}" Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Window>
