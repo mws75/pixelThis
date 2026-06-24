@@ -33,6 +33,16 @@ public partial class PixelDocument : ObservableObject
         ActiveLayerIndex = 0;
     }
 
+    /// <summary>Construct from a set of existing layers (used when loading a saved project).</summary>
+    public PixelDocument(int width, int height, IEnumerable<Layer> layers, int activeLayerIndex)
+    {
+        Width = width;
+        Height = height;
+        foreach (var layer in layers) Layers.Add(layer);
+        if (Layers.Count == 0) Layers.Add(new Layer(width, height, "Layer 1"));
+        ActiveLayerIndex = Math.Clamp(activeLayerIndex, 0, Layers.Count - 1);
+    }
+
     public Layer? ActiveLayer
         => ActiveLayerIndex >= 0 && ActiveLayerIndex < Layers.Count ? Layers[ActiveLayerIndex] : null;
 

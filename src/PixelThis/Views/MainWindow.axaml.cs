@@ -89,6 +89,57 @@ public partial class MainWindow : Window
             Vm.ImportPalette(result.Text, result.Replace);
     }
 
+    private async void OnSaveClick(object? sender, RoutedEventArgs e)
+    {
+        var vm = Vm;
+        if (vm is null) return;
+
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save PixelThis project",
+            SuggestedFileName = "untitled." + ProjectSerializer.Extension,
+            DefaultExtension = ProjectSerializer.Extension,
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("PixelThis project") { Patterns = new[] { "*." + ProjectSerializer.Extension } }
+            }
+        });
+
+        if (file is null) return;
+
+        await using var stream = await file.OpenWriteAsync();
+        ProjectSerializer.Save(vm.Document, vm.Palette.Select(p => p.Value), vm.CurrentColor, stream);
+    }
+
+    private async void OnOpenClick(object? sender, RoutedEventArgs e)
+    {
+        var vm = Vm;
+        if (vm is null) return;
+
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open PixelThis project",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("PixelThis project") { Patterns = new[] { "*." + ProjectSerializer.Extension } }
+            }
+        });
+
+        if (files.Count == 0) return;
+
+        try
+        {
+            await using var stream = await files[0].OpenReadAsync();
+            var data = ProjectSerializer.Load(stream);
+            vm.LoadProject(data.Document, data.Palette, data.CurrentColor);
+        }
+        catch (Exception ex)
+        {
+            _hoverInfo.Text = $"Couldn't open project: {ex.Message}";
+        }
+    }
+
     private async void OnExportClick(object? sender, RoutedEventArgs e)
     {
         var vm = Vm;

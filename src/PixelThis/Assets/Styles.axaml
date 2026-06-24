@@ -40,6 +40,19 @@
         <Setter Property="Background" Value="#373C4E" />
     </Style>
 
+    <!-- Color swatch button: shows the current color, opens the picker flyout (no dropdown chevron) -->
+    <Style Selector="Button.swatch">
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="Button.swatch:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#2C3044" />
+    </Style>
+
     <Style Selector="Border.panel">
         <Setter Property="Background" Value="{DynamicResource PanelBgBrush}" />
         <Setter Property="CornerRadius" Value="12" />

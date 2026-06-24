@@ -29,6 +29,10 @@ public partial class Layer : ObservableObject
         _name = name;
     }
 
+    /// <summary>Rehydrate a layer from a saved project (pixels are taken as-is, not copied).</summary>
+    public static Layer FromSaved(int width, int height, string name, uint[] pixels, bool visible, double opacity)
+        => new(width, height, name, pixels) { IsVisible = visible, Opacity = opacity };
+
     public uint[] ClonePixels()
     {
         var copy = new uint[Pixels.Length];

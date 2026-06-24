@@ -76,10 +76,12 @@ public class PixelEditorControl : Control
     private PixelDocument? _subscribed;
     private bool _drawing;
     private int _lastX, _lastY;
+    private bool _hasHover;
+    private int _hoverX, _hoverY;
 
     static PixelEditorControl()
     {
-        AffectsRender<PixelEditorControl>(ZoomProperty, ShowGridProperty);
+        AffectsRender<PixelEditorControl>(ZoomProperty, ShowGridProperty, ActiveToolProperty, BrushSizeProperty);
         AffectsMeasure<PixelEditorControl>(ZoomProperty, DocumentProperty);
     }
 
@@ -162,6 +164,24 @@ public class PixelEditorControl : Control
 
         // Outer frame.
         context.DrawRectangle(null, new Pen(new SolidColorBrush(Color.FromArgb(80, 255, 255, 255)), 1), dest);
+
+        // Brush footprint preview under the cursor.
+        if (_hasHover && doc.InBounds(_hoverX, _hoverY))
+            DrawBrushPreview(context, doc);
+    }
+
+    /// <summary>Outline the pixels the active tool would affect at the hovered cell.</summary>
+    private void DrawBrushPreview(DrawingContext ctx, PixelDocument doc)
+    {
+        // Pencil/eraser stamp a BrushSize square (see PixelDocument.Stamp); other
+        // tools act on the single hovered cell.
+        int brush = ActiveTool is ToolType.Pencil or ToolType.Eraser ? Math.Max(1, BrushSize) : 1;
+        int half = brush / 2;
+        var rect = new Rect((_hoverX - half) * Zoom, (_hoverY - half) * Zoom, brush * Zoom, brush * Zoom);
+
+        // Two-tone outline (dark halo + thin white) so it stays legible over any color.
+        ctx.DrawRectangle(null, new Pen(new SolidColorBrush(Color.FromArgb(110, 0, 0, 0)), 3), rect);
+        ctx.DrawRectangle(null, new Pen(new SolidColorBrush(Color.FromArgb(235, 255, 255, 255)), 1), rect);
     }
 
     private void DrawCheckerboard(DrawingContext ctx, Rect dest)
@@ -236,15 +256,30 @@ public class PixelEditorControl : Control
     {
         base.OnPointerMoved(e);
         var doc = Document;
-        if (doc is null || !_drawing) return;
+        if (doc is null) return;
 
         var (x, y) = ToPixel(e.GetPosition(this));
-        if (x == _lastX && y == _lastY) return;
+
+        // Keep the brush preview in sync with the cursor, drawing or not.
+        if (!_hasHover || x != _hoverX || y != _hoverY)
+        {
+            _hasHover = true;
+            _hoverX = x; _hoverY = y;
+            InvalidateVisual();
+        }
+
+        if (!_drawing || (x == _lastX && y == _lastY)) return;
 
         uint color = ActiveTool == ToolType.Eraser ? PixelColor.Transparent : PrimaryColor;
         doc.DrawLine(_lastX, _lastY, x, y, color, BrushSize);
         _lastX = x; _lastY = y;
         doc.NotifyChanged();
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        if (_hasHover) { _hasHover = false; InvalidateVisual(); }
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)

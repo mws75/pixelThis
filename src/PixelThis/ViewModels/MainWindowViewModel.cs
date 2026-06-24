@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -30,6 +31,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public IBrush CurrentColorBrush => new SolidColorBrush(Color.FromUInt32(CurrentColor));
 
+    /// <summary>Two-way bridge for the ColorPicker, which works in <see cref="Color"/> not packed uint.</summary>
+    public Color CurrentColorValue
+    {
+        get => Color.FromUInt32(CurrentColor);
+        set => CurrentColor = value.ToUInt32();
+    }
+
     public string CurrentColorHex
     {
         get => PixelColor.ToHex(CurrentColor);
@@ -45,6 +53,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(CurrentColorBrush));
         OnPropertyChanged(nameof(CurrentColorHex));
+        OnPropertyChanged(nameof(CurrentColorValue));
     }
 
     partial void OnDocumentChanged(PixelDocument value)
@@ -125,6 +134,15 @@ public partial class MainWindowViewModel : ViewModelBase
     public void NewDocument(int width, int height)
     {
         Document = new PixelDocument(width, height);
+    }
+
+    /// <summary>Replace the whole working session with a loaded project.</summary>
+    public void LoadProject(PixelDocument document, IReadOnlyList<uint> palette, uint currentColor)
+    {
+        Document = document;
+        Palette.Clear();
+        foreach (var c in palette) Palette.Add(new PaletteColor(c));
+        CurrentColor = currentColor;
     }
 
     private void SeedDefaultPalette()

@@ -7,6 +7,7 @@
         xmlns:conv="using:PixelThis.Converters"
         xmlns:tools="using:PixelThis.Tools"
         xmlns:models="using:PixelThis.Models"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
         x:Class="PixelThis.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -24,7 +25,8 @@
                 BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,0,0,1">
             <Grid ColumnDefinitions="Auto,*,Auto" Height="48">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0">
-                    <TextBlock Text="◆" Foreground="{StaticResource AccentBrush}" FontSize="16" VerticalAlignment="Center" />
+                    <icons:MaterialIcon Kind="Palette" Width="20" Height="20"
+                                        Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" />
                     <TextBlock Text="PixelThis" FontWeight="Bold" FontSize="16" Margin="8,0,0,0" VerticalAlignment="Center" />
                     <TextBlock Text="for Godot" Foreground="{StaticResource TextMutedBrush}" FontSize="11"
                                Margin="8,2,0,0" VerticalAlignment="Center" />
@@ -32,6 +34,8 @@
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Button Classes="icon" Content="New" Click="OnNewClick" ToolTip.Tip="New image" />
+                    <Button Classes="icon" Content="Open" Click="OnOpenClick" ToolTip.Tip="Open a PixelThis project (.pxt)" />
+                    <Button Classes="icon" Content="Save" Click="OnSaveClick" ToolTip.Tip="Save the project (.pxt) to continue later" />
                     <Button Classes="icon" Content="Import Palette" Click="OnImportPaletteClick"
                             ToolTip.Tip="Paste a list of hex codes to build a palette" />
                     <Button Classes="icon" Content="Export PNG" Click="OnExportClick"
@@ -39,12 +43,20 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="0,0,14,0">
-                    <Button Classes="icon" Content="↶" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo (Cmd+Z)" />
-                    <Button Classes="icon" Content="↷" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}" ToolTip.Tip="Redo" />
+                    <Button Classes="icon" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" ToolTip.Tip="Undo (Cmd+Z)">
+                        <icons:MaterialIcon Kind="Undo" Width="18" Height="18" />
+                    </Button>
+                    <Button Classes="icon" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}" ToolTip.Tip="Redo">
+                        <icons:MaterialIcon Kind="Redo" Width="18" Height="18" />
+                    </Button>
                     <Border Width="1" Background="{StaticResource StrokeBrush}" Margin="6,8" />
-                    <Button Classes="icon" Content="−" Command="{Binding ZoomOutCommand}" ToolTip.Tip="Zoom out" />
+                    <Button Classes="icon" Command="{Binding ZoomOutCommand}" ToolTip.Tip="Zoom out">
+                        <icons:MaterialIcon Kind="Minus" Width="18" Height="18" />
+                    </Button>
                     <TextBlock Text="{Binding Zoom, StringFormat='{}{0:0}×'}" VerticalAlignment="Center" Width="40" TextAlignment="Center" />
-                    <Button Classes="icon" Content="+" Command="{Binding ZoomInCommand}" ToolTip.Tip="Zoom in" />
+                    <Button Classes="icon" Command="{Binding ZoomInCommand}" ToolTip.Tip="Zoom in">
+                        <icons:MaterialIcon Kind="Plus" Width="18" Height="18" />
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -64,23 +76,33 @@
         <Border DockPanel.Dock="Left" Background="{StaticResource AppBgBrush}"
                 BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,0,1,0" Width="60">
             <StackPanel Margin="0,12" Spacing="6" HorizontalAlignment="Center">
-                <ToggleButton Classes="tool" Content="✏" ToolTip.Tip="Pencil (B)"
+                <ToggleButton Classes="tool" ToolTip.Tip="Pencil (B)"
                               Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Pencil}"
-                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Pencil}" />
-                <ToggleButton Classes="tool" Content="⌫" ToolTip.Tip="Eraser (E)"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Pencil}">
+                    <icons:MaterialIcon Kind="Pencil" Width="22" Height="22" />
+                </ToggleButton>
+                <ToggleButton Classes="tool" ToolTip.Tip="Eraser (E)"
                               Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Eraser}"
-                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Eraser}" />
-                <ToggleButton Classes="tool" Content="🪣" ToolTip.Tip="Fill (G)"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Eraser}">
+                    <icons:MaterialIcon Kind="Eraser" Width="22" Height="22" />
+                </ToggleButton>
+                <ToggleButton Classes="tool" ToolTip.Tip="Fill (G)"
                               Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Fill}"
-                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Fill}" />
-                <ToggleButton Classes="tool" Content="💧" ToolTip.Tip="Color picker (I)"
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Fill}">
+                    <icons:MaterialIcon Kind="FormatColorFill" Width="22" Height="22" />
+                </ToggleButton>
+                <ToggleButton Classes="tool" ToolTip.Tip="Color picker (I)"
                               Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolType.Picker}"
-                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Picker}" />
+                              IsChecked="{Binding ActiveTool, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=Picker}">
+                    <icons:MaterialIcon Kind="Eyedropper" Width="22" Height="22" />
+                </ToggleButton>
 
                 <Border Height="1" Background="{StaticResource StrokeBrush}" Margin="8,8" />
 
-                <ToggleButton Classes="tool" Content="#" ToolTip.Tip="Toggle pixel grid"
-                              IsChecked="{Binding ShowGrid}" />
+                <ToggleButton Classes="tool" ToolTip.Tip="Toggle pixel grid"
+                              IsChecked="{Binding ShowGrid}">
+                    <icons:MaterialIcon Kind="Grid" Width="22" Height="22" />
+                </ToggleButton>
             </StackPanel>
         </Border>
 
@@ -93,13 +115,23 @@
                     <StackPanel Spacing="10">
                         <TextBlock Classes="section" Text="COLOR" />
                         <Grid ColumnDefinitions="44,*,Auto">
-                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="8"
-                                    Background="{Binding CurrentColorBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" />
+                            <Button Grid.Column="0" Classes="swatch" Width="44" Height="40"
+                                    ToolTip.Tip="Click to open the color picker">
+                                <Border CornerRadius="6" Background="{Binding CurrentColorBrush}"
+                                        BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" />
+                                <Button.Flyout>
+                                    <Flyout Placement="Bottom">
+                                        <ColorView Color="{Binding CurrentColorValue, Mode=TwoWay}" Width="256" />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
                             <TextBox Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center"
                                      Text="{Binding CurrentColorHex, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                                      Watermark="#RRGGBB" />
-                            <Button Grid.Column="2" Classes="icon" Content="＋" VerticalAlignment="Center"
-                                    Command="{Binding AddCurrentColorToPaletteCommand}" ToolTip.Tip="Add to palette" />
+                            <Button Grid.Column="2" Classes="icon" VerticalAlignment="Center"
+                                    Command="{Binding AddCurrentColorToPaletteCommand}" ToolTip.Tip="Add to palette">
+                                <icons:MaterialIcon Kind="Plus" Width="18" Height="18" />
+                            </Button>
                         </Grid>
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBlock Text="Brush" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
@@ -154,10 +186,18 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
-                            <Button Classes="icon" Content="＋" Command="{Binding AddLayerCommand}" ToolTip.Tip="Add layer" />
-                            <Button Classes="icon" Content="🗑" Command="{Binding RemoveLayerCommand}" ToolTip.Tip="Delete layer" />
-                            <Button Classes="icon" Content="▲" Command="{Binding MoveLayerUpCommand}" ToolTip.Tip="Move up" />
-                            <Button Classes="icon" Content="▼" Command="{Binding MoveLayerDownCommand}" ToolTip.Tip="Move down" />
+                            <Button Classes="icon" Command="{Binding AddLayerCommand}" ToolTip.Tip="Add layer">
+                                <icons:MaterialIcon Kind="Plus" Width="18" Height="18" />
+                            </Button>
+                            <Button Classes="icon" Command="{Binding RemoveLayerCommand}" ToolTip.Tip="Delete layer">
+                                <icons:MaterialIcon Kind="TrashCanOutline" Width="18" Height="18" />
+                            </Button>
+                            <Button Classes="icon" Command="{Binding MoveLayerUpCommand}" ToolTip.Tip="Move up">
+                                <icons:MaterialIcon Kind="ArrowUp" Width="18" Height="18" />
+                            </Button>
+                            <Button Classes="icon" Command="{Binding MoveLayerDownCommand}" ToolTip.Tip="Move down">
+                                <icons:MaterialIcon Kind="ArrowDown" Width="18" Height="18" />
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>
