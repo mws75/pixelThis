@@ -134,6 +134,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void NewDocument(int width, int height)
     {
         Document = new PixelDocument(width, height);
+        FitZoomTo(width, height);
     }
 
     /// <summary>Replace the whole working session with a loaded project.</summary>
@@ -143,6 +144,16 @@ public partial class MainWindowViewModel : ViewModelBase
         Palette.Clear();
         foreach (var c in palette) Palette.Add(new PaletteColor(c));
         CurrentColor = currentColor;
+        FitZoomTo(document.Width, document.Height);
+    }
+
+    /// <summary>Pick an integer zoom so the canvas opens at a comfortable on-screen size.</summary>
+    private void FitZoomTo(int width, int height)
+    {
+        const double target = 512.0; // desired longest-edge size in pixels
+        int longest = Math.Max(width, height);
+        double fit = Math.Floor(target / longest);
+        Zoom = Math.Clamp(fit, 1, 64);
     }
 
     private void SeedDefaultPalette()

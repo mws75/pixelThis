@@ -19,11 +19,10 @@
         </Grid>
 
         <WrapPanel Grid.Row="2">
-            <Button Content="16²" Click="OnPreset" Tag="16" Margin="0,0,6,6" />
-            <Button Content="32²" Click="OnPreset" Tag="32" Margin="0,0,6,6" />
-            <Button Content="48²" Click="OnPreset" Tag="48" Margin="0,0,6,6" />
-            <Button Content="64²" Click="OnPreset" Tag="64" Margin="0,0,6,6" />
-            <Button Content="128²" Click="OnPreset" Tag="128" Margin="0,0,6,6" />
+            <Button Content="16 × 16" Click="OnPreset" Tag="16" Margin="0,0,6,6" Padding="12,6" />
+            <Button Content="32 × 32" Click="OnPreset" Tag="32" Margin="0,0,6,6" Padding="12,6" />
+            <Button Content="64 × 64" Click="OnPreset" Tag="64" Margin="0,0,6,6" Padding="12,6" />
+            <Button Content="128 × 128" Click="OnPreset" Tag="128" Margin="0,0,6,6" Padding="12,6" />
         </WrapPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
