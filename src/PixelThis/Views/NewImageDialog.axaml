@@ -19,6 +19,7 @@
         </Grid>
 
         <WrapPanel Grid.Row="2">
+            <Button Content="8 × 8" Click="OnPreset" Tag="8" Margin="0,0,6,6" Padding="12,6" />
             <Button Content="16 × 16" Click="OnPreset" Tag="16" Margin="0,0,6,6" Padding="12,6" />
             <Button Content="32 × 32" Click="OnPreset" Tag="32" Margin="0,0,6,6" Padding="12,6" />
             <Button Content="64 × 64" Click="OnPreset" Tag="64" Margin="0,0,6,6" Padding="12,6" />

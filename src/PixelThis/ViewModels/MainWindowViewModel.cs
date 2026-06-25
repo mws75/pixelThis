@@ -19,6 +19,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private bool _showGrid = true;
     [ObservableProperty] private uint _currentColor = PixelColor.Pack(255, 0xE8, 0xE8, 0xF0);
 
+    /// <summary>Side length of the current canvas when it is square; 0 otherwise. Drives the Canvas Size tiles.</summary>
+    [ObservableProperty] private int _activeCanvasSize = 32;
+
     public ObservableCollection<PaletteColor> Palette { get; } = new();
 
     public MainWindowViewModel()
@@ -131,10 +134,25 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Default magnification a freshly created/opened canvas opens at. Kept fixed
+    /// (rather than fit-to-view) so a larger pixel resolution visibly opens larger;
+    /// the user zooms in/out from here.
+    /// </summary>
+    private const double DefaultZoom = 16;
+
+    /// <summary>Start a fresh square canvas at the chosen pixel resolution (from the Canvas Size tiles).</summary>
+    [RelayCommand]
+    private void SetCanvasSize(string size)
+    {
+        if (int.TryParse(size, out int n)) NewDocument(n, n);
+    }
+
     public void NewDocument(int width, int height)
     {
         Document = new PixelDocument(width, height);
-        FitZoomTo(width, height);
+        Zoom = DefaultZoom;
+        ActiveCanvasSize = width == height ? width : 0;
     }
 
     /// <summary>Replace the whole working session with a loaded project.</summary>
@@ -144,16 +162,8 @@ public partial class MainWindowViewModel : ViewModelBase
         Palette.Clear();
         foreach (var c in palette) Palette.Add(new PaletteColor(c));
         CurrentColor = currentColor;
-        FitZoomTo(document.Width, document.Height);
-    }
-
-    /// <summary>Pick an integer zoom so the canvas opens at a comfortable on-screen size.</summary>
-    private void FitZoomTo(int width, int height)
-    {
-        const double target = 512.0; // desired longest-edge size in pixels
-        int longest = Math.Max(width, height);
-        double fit = Math.Floor(target / longest);
-        Zoom = Math.Clamp(fit, 1, 64);
+        Zoom = DefaultZoom;
+        ActiveCanvasSize = document.Width == document.Height ? document.Width : 0;
     }
 
     private void SeedDefaultPalette()

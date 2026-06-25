@@ -40,6 +40,28 @@
         <Setter Property="Background" Value="#373C4E" />
     </Style>
 
+    <!-- Canvas-size tiles: full-width stacked buttons, accent when active -->
+    <Style Selector="ToggleButton.size">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0,9" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="#2C3044" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="ToggleButton.size:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#373C4E" />
+    </Style>
+    <Style Selector="ToggleButton.size:checked /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="Foreground" Value="#0E1117" />
+    </Style>
+    <Style Selector="ToggleButton.size:checked:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
     <!-- Color swatch button: shows the current color, opens the picker flyout (no dropdown chevron) -->
     <Style Selector="Button.swatch">
         <Setter Property="Padding" Value="2" />

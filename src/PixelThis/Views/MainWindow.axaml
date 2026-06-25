@@ -108,10 +108,37 @@
 
         <!-- ===== Right panels ===== -->
         <Border DockPanel.Dock="Right" Background="{StaticResource AppBgBrush}" Width="288" Padding="12">
-            <Grid RowDefinitions="Auto,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+                <!-- Canvas size -->
+                <Border Grid.Row="0" Classes="panel" Margin="0,0,0,12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="section" Text="CANVAS SIZE" />
+                        <StackPanel Spacing="6">
+                            <ToggleButton Classes="size" Content="8 × 8"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="8"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=8}" />
+                            <ToggleButton Classes="size" Content="16 × 16"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="16"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=16}" />
+                            <ToggleButton Classes="size" Content="32 × 32"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="32"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=32}" />
+                            <ToggleButton Classes="size" Content="48 × 48"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="48"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=48}" />
+                            <ToggleButton Classes="size" Content="64 × 64"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="64"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=64}" />
+                            <ToggleButton Classes="size" Content="128 × 128"
+                                          Command="{Binding SetCanvasSizeCommand}" CommandParameter="128"
+                                          IsChecked="{Binding ActiveCanvasSize, Mode=OneWay, Converter={x:Static conv:EnumToBoolConverter.Instance}, ConverterParameter=128}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
 
                 <!-- Current color + brush -->
-                <Border Grid.Row="0" Classes="panel" Margin="0,0,0,12">
+                <Border Grid.Row="1" Classes="panel" Margin="0,0,0,12">
                     <StackPanel Spacing="10">
                         <TextBlock Classes="section" Text="COLOR" />
                         <Grid ColumnDefinitions="44,*,Auto">
@@ -142,7 +169,7 @@
                 </Border>
 
                 <!-- Palette -->
-                <Border Grid.Row="1" Classes="panel" Margin="0,0,0,12">
+                <Border Grid.Row="2" Classes="panel" Margin="0,0,0,12">
                     <StackPanel Spacing="10">
                         <Grid ColumnDefinitions="*,Auto,Auto">
                             <TextBlock Grid.Column="0" Classes="section" Text="PALETTE" VerticalAlignment="Center" />
@@ -170,7 +197,7 @@
                 </Border>
 
                 <!-- Layers -->
-                <Border Grid.Row="2" Classes="panel">
+                <Border Grid.Row="3" Classes="panel">
                     <Grid RowDefinitions="Auto,*,Auto">
                         <TextBlock Grid.Row="0" Classes="section" Text="LAYERS" Margin="2,0,0,8" />
                         <ListBox Grid.Row="1" ItemsSource="{Binding Document.Layers}"
